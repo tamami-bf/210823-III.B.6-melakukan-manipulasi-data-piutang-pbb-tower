@@ -1,0 +1,43 @@
+
+== Data Asal 
+
+Basis data dengan _schema_ PBB pada sistem basis data Oracle.
+
+== Kegiatan Manipulasi Yang Dilakukan
+
+Melakukan pengambilan data dan memberikan data piutang Pajak Bumi dan Bangunan untuk Tower _Base Transmission Station_ (BTS) tahun pajak 2020 dari sistem basis data Oracle.
+
+== Hasil Manipulasi
+
+Hasil manipulasi data dapat diakses pada alamat https://docs.google.com/spreadsheets/d/1gdcRIZ2N9XIi24M63LMFLvDBgkmnBcTQ/edit?usp=sharing&ouid=116430206412332132975&rtpof=true&sd=true
+
+== _Script_ atau _command_ yang Digunakan Untuk Melakukan Manipulasi
+
+----
+select sppt.kd_propinsi||'.'||sppt.kd_dati2||'.'||sppt.kd_kecamatan||'.'||sppt.kd_kelurahan||'.'||sppt.kd_blok||'-'||sppt.no_urut||
+    '.'||sppt.kd_jns_op nop, sppt.nm_wp_sppt, sppt.pbb_yg_harus_dibayar_sppt
+from sppt
+join dat_op_bangunan bng on (
+  bng.kd_propinsi = sppt.kd_propinsi and
+  bng.kd_dati2 = sppt.kd_dati2 and
+  bng.kd_kecamatan = sppt.kd_kecamatan and
+  bng.kd_kelurahan = sppt.kd_kelurahan and
+  bng.kd_blok = sppt.kd_blok and
+  bng.no_urut = sppt.no_urut and
+  bng.kd_jns_op = sppt.kd_jns_op 
+)
+where thn_pajak_sppt='2020'
+  and status_pembayaran_sppt='0'
+  and bng.kd_jpb = '10'
+  and (
+    sppt.nm_wp_sppt like '%TOWER%BERSAMA%' or
+    sppt.nm_wp_sppt like '%SOLUSI%TUNAS%' or
+    sppt.nm_wp_sppt like '%INDOSAT%BTS%' or
+    sppt.nm_wp_sppt like '%TELKOMSEL%BTS%' or
+    sppt.nm_wp_sppt like '%PERSADA%SOKKA%' or
+    sppt.nm_wp_sppt like '%PROTELINDO%' or
+    sppt.nm_wp_sppt like '%XL%BTS%' or
+    sppt.nm_wp_sppt like '%DAYA%MITRA%'
+  )
+order by sppt.nm_wp_sppt, sppt.kd_kecamatan, sppt.kd_kelurahan, sppt.kd_blok, sppt.no_urut
+----
